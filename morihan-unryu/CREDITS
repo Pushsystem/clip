@@ -6,7 +6,7 @@ Lemo-Opuscar style library, "Tablet Sketch Explainer" demo (github.com/lemomo-ai
 Product photo (photos/1.jpg): supplied by the client, used with their permission.
 Product name, brand and facts: from the client's brief.
 
-Voice: Microsoft Edge neural text-to-speech, voice th-TH-NiwatNeural, via edge-tts (github.com/rany2/edge-tts, LGPL-3.0).
+Voice: Microsoft Edge neural text-to-speech, voice en-US-AvaMultilingualNeural (multilingual, reading Thai), rate +14%, via edge-tts (github.com/rany2/edge-tts, LGPL-3.0).
   Generated speech; check Microsoft's terms for commercial use of the voice yourself.
 Voice check: faster-whisper (MIT) with Whisper large-v3-turbo / small (MIT).
 

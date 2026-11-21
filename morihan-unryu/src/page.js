@@ -4,7 +4,7 @@ const CLUSTER = /[^ัิ-ฺ็-๎ำ][ัิ-ฺ็-๎]*ำ?|[ัิ-ฺ็-
 const clusters = s => s.match(CLUSTER) || [];
 
 // ---------- extra parts ----------
-const VO_START = { v1: 0.35, v2: 3.9, v3: 8.0, v4: 12.4, v5: 16.3, v6: 19.6, v7: 22.45, v8: 27.9 };
+const VO_START = { v1: 0.35, v2: 4.15, v3: 8.0, v4: 12.4, v5: 16.3, v6: 19.7, v7: 22.75, v8: 27.9 };
 function rectP(x0, y0, x1, y1) { return [[x0, y0], [x1, y0], [x1, y1], [x0, y1]]; }
 function outlineRect(x0, y0, x1, y1, o, t0, d) { const P = rectP(x0, y0, x1, y1); return PEN(P.concat([P[0], [P[1][0] - 4, P[1][1] + 1]]), { w: o.w ?? 2.0, smooth: false, ta: 0.04, tb: 0.04, wob: 0.5, layer: o.layer, p: o.p }, t0, d); }
 function band(path, w0, w1) {   // a thick body around a path (dragon body), tapering w0 → w1

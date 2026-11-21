@@ -4,7 +4,7 @@ Run: <LIB>/.venv/bin/python tools/cues.py   (build.sh does)"""
 import json, os
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 V = os.path.join(HERE, 'voice')
-START = {'v1': 0.35, 'v2': 3.9, 'v3': 8.0, 'v4': 12.4, 'v5': 16.3, 'v6': 19.6, 'v7': 22.45, 'v8': 27.9}
+START = {'v1': 0.35, 'v2': 4.15, 'v3': 8.0, 'v4': 12.4, 'v5': 16.3, 'v6': 19.7, 'v7': 22.75, 'v8': 27.9}
 LINES = {'v1': ['รู้ไหม มัทฉะกระป๋องนี้', 'ชื่อแปลว่า “มังกรเมฆ”'],
          'v2': ['Unryu จาก Morihan', 'แบรนด์ชาเก่าแก่แห่งอุจิ เกียวโต'],
          'v3': ['เกรดพิธีการ คัดใบชาเก็บแรกของฤดู', 'ที่ปลูกใต้ร่มเงา'],

@@ -9,8 +9,8 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 [ -f "$LIB/core/render/video.mjs" ] || { echo "set LIB to the library folder"; exit 1; }
 PY="$LIB/.venv/bin/python"; NAME=morihan-unryu; SIZE=1080x1920; WORKERS=${WORKERS:-3}
 export PATH="$HERE/bin:$PATH"
-# voice (edge-tts, th-TH-NiwatNeural) only when missing; tools/tts_th.py passes the HTTPS proxy, tools/asr_th.py checks it
-[ -f "$HERE/voice/v8.wav" ] || "$PY" "$HERE/tools/tts_th.py" "$HERE/voice/lines.json" "$HERE/voice" --voice th-TH-NiwatNeural --rate +4%
+# voice (edge-tts, en-US-AvaMultilingualNeural reading Thai) only when missing; tools/tts_th.py passes the HTTPS proxy, tools/asr_th.py checks it
+[ -f "$HERE/voice/v8.wav" ] || "$PY" "$HERE/tools/tts_th.py" "$HERE/voice/lines.json" "$HERE/voice" --voice en-US-AvaMultilingualNeural --rate +14%
 "$PY" "$HERE/tools/skeleton.py"
 "$PY" "$HERE/tools/cues.py"
 sh "$HERE/tools/assemble.sh"
