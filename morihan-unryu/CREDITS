@@ -1,0 +1,19 @@
+Morihan Unryu — "มังกรเมฆ" (Tablet Sketch Explainer, vertical 31.5 s)
+
+Picture: drawn entirely in code. Pencil / colour-block / lettering / camera engine adapted from the
+Lemo-Opuscar style library, "Tablet Sketch Explainer" demo (github.com/lemomo-ai/lemo-opuscar, see its LICENSE).
+
+Product photo (photos/1.jpg): supplied by the client, used with their permission.
+Product name, brand and facts: from the client's brief.
+
+Voice: Microsoft Edge neural text-to-speech, voice th-TH-NiwatNeural, via edge-tts (github.com/rany2/edge-tts, LGPL-3.0).
+  Generated speech; check Microsoft's terms for commercial use of the voice yourself.
+Voice check: faster-whisper (MIT) with Whisper large-v3-turbo / small (MIT).
+
+Fonts (SIL Open Font License 1.1, licence texts in fonts/):
+  Itim — Cadson Demak (github.com/google/fonts/tree/main/ofl/itim)
+  Sarabun — Cadson Demak (ofl/sarabun)
+  Caveat — Impallari Type (ofl/caveat), Bold instance cut with fontTools
+  Zen Kurenaido — Yoshimichi Ohira (ofl/zenkurenaido), subset to 雲龍宇治
+
+Music: original score for this film, played with sampled instruments:

@@ -1,0 +1,6 @@
+out/
+bin/
+stills/
+.ffvenv/
+voice/.cache/
+*.part
