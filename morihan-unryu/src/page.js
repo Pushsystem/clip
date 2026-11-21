@@ -87,7 +87,7 @@ function buildPage() {
   BLOB(L1.half, C.leafDk, { dx: 7, dy: 5, a: 0.42, amp: 1.2, ang: -0.9, sp: 7 }, 11.43, 0.06);
   TXT('First flush', 160, 1252, 56, { f: 'CB', k: 0.82, layer: 'coral' }, 11.5, 0.3);
   TXT('- ปลูกใต้ร่มเงา', 432, 1252, 42, { f: 'IT', k: 0.76 }, 11.82, 0.3);
-  TXT('ใบชาเก็บแรกของฤดู', 170, 1712, 46, { f: 'IT', k: 0.76 }, 12.14, 0.32);
+  TXT('ใบชาเก็บแรกของฤดู', 262, 1712, 46, { f: 'IT', k: 0.76 }, 12.14, 0.32);
   // the stone mill (v4 at 11.2)
   const mx = 960;
   PEN([[mx, 1270], [mx, 1660]], { layer: 'light', w: 1.2, p: 0.45 }, 12.5, 0.05);
@@ -106,7 +106,7 @@ function buildPage() {
   BLOB(lower, '#a49c8f', { dx: 8, dy: 6, a: 0.8, amp: 2, ang: -0.3, sp: 12, cuts: [upper] }, 13.5, 0.1);
   BLOB(upper, C.stone, { dx: 8, dy: 6, a: 0.8, amp: 2, ang: -0.3, sp: 12, holes: [ell(mx - 30, 1330, 18, 7, 0, 0, TAU, 12)], stop: 0.8 }, 13.6, 0.1);
   BLOB(rectP(mx + 150, 1384, mx + 240, 1398).concat([[mx + 240, 1318], [mx + 230, 1318]]), C.wood, { dx: 5, dy: 4, a: 0.9, amp: 1, ang: 0, sp: 6 }, 13.7, 0.04);
-  TXT('โม่ด้วยครกหิน', 790, 1262, 46, { f: 'IT', k: 0.76 }, 13.76, 0.3);
+  TXT('โม่ด้วยครกหิน', 730, 1262, 46, { f: 'IT', k: 0.76 }, 13.76, 0.3);
   // near-silence 14.1–14.9: the push into the mill; the shatter at 14.9 (the leaf's colour leaves as chips)
   const SH = 14.9;
   OCC(L1.outline.map(([x, y]) => [x + 7, y + 5]), SH, [], true);
@@ -215,16 +215,16 @@ function buildPage() {
   // ================= camera =================
   // k: d drift · g gesture (quick start, settles) · i push in (accelerating) · p punch
   CAM = [
-    { t: 0.00, x: 402, y: 236, z: 1.95, r: -1.4, k: 'd' },          // the question, close
-    { t: 1.80, x: 418, y: 240, z: 1.86, r: -1.2, k: 'd' },
+    { t: 0.00, x: 425, y: 230, z: 1.72, r: -1.0, k: 'd' },          // the question, close
+    { t: 1.80, x: 432, y: 232, z: 1.66, r: -0.8, k: 'd' },
     { t: 2.60, x: 650, y: 360, z: 1.03, r: 0.0, k: 'g' },           // pinch out: a question, and a drawing
     { t: 3.75, x: 652, y: 366, z: 1.03, r: 0.2, k: 'd' },
     { t: 4.50, x: 650, y: 880, z: 1.0, r: 0.5, k: 'g' },            // down the page to the can
     { t: 9.10, x: 652, y: 888, z: 1.0, r: 0.4, k: 'd' },
     { t: 9.90, x: 650, y: 1380, z: 1.0, r: -0.5, k: 'g' },          // to the tea field and the mill
     { t: 14.10, x: 655, y: 1384, z: 1.02, r: -0.5, k: 'd' },
-    { t: 14.85, x: 660, y: 1450, z: 1.3, r: -0.5, k: 'i' },         // near-silence: closer on leaf and mill
-    { t: 15.05, x: 640, y: 1460, z: 1.42, r: -0.5, k: 'p' },        // the shatter
+    { t: 14.85, x: 655, y: 1450, z: 1.25, r: -0.3, k: 'i' },         // near-silence: closer on leaf and mill
+    { t: 15.05, x: 650, y: 1460, z: 1.34, r: -0.3, k: 'p' },        // the shatter
     { t: 15.85, x: 930, y: 1460, z: 1.85, r: -0.3, k: 'g' },        // ride with the chips into the mill
     { t: 16.05, x: 935, y: 1462, z: 1.85, r: -0.3, k: 'd' },
     { t: 16.65, x: 650, y: 1960, z: 1.0, r: 0.4, k: 'g' },          // the taste

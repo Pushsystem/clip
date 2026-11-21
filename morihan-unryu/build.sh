@@ -4,6 +4,7 @@
 # Needs ffmpeg 7+ first on PATH (a copy lives in bin/), the library at LIB (its .venv with voice + core tiers).
 set -e
 LIB=/root/lemo-opuscar
+export LIB
 HERE=$(cd "$(dirname "$0")" && pwd)
 [ -f "$LIB/core/render/video.mjs" ] || { echo "set LIB to the library folder"; exit 1; }
 PY="$LIB/.venv/bin/python"; NAME=morihan-unryu; SIZE=1080x1920; WORKERS=${WORKERS:-3}

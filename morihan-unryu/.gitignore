@@ -3,4 +3,5 @@ bin/
 stills/
 .ffvenv/
 voice/.cache/
+events.json
 *.part
