@@ -1,0 +1,18 @@
+ดอยหมอกสน — third-party assets used in the film
+
+Fonts (SIL Open Font License 1.1, files in fonts/):
+- Kanit (SemiBold, Medium) — Cadson Demak, https://github.com/google/fonts/tree/main/ofl/kanit (licence: fonts/OFL-Kanit.txt)
+- Overpass Mono — Delve Withrington et al., https://github.com/google/fonts/tree/main/ofl/overpassmono (SIL OFL 1.1)
+
+Music samples (CC0 1.0):
+- Samples (CC0): Versilian Community Sample Library (Versilian Studios), https://github.com/sgossner/VCSL — marimba, glockenspiel, vibraphone, woodblock
+
+Synthesised in code (no third-party material):
+- kalimba and music box (physical modelling, Lemo-Opuscar core/audio/pluck.py)
+- all foley and ambience (procedural, core/audio/sfx.py)
+
+Software:
+- three.js (MIT) for 3D rendering
+- Lemo-Opuscar library tools (render, sampler, sfx, mux), github.com/lemomo-ai/lemo-opuscar — see its LICENSE
+
+Place, characters and story are fictional. No real locations, brands or logos appear. No voice-over.
