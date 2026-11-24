@@ -9,20 +9,44 @@ def load(path):
                          capture_output=True, check=True).stdout
     return np.frombuffer(raw, np.int16).astype(np.float32) / 32768
 
+
+def reson(x, f, q):
+    """2-pole resonator (formant)."""
+    r = np.exp(-np.pi * f / q / SR); c = 2 * r * np.cos(2 * np.pi * f / SR)
+    y = np.zeros_like(x); y1 = y2 = 0.0
+    for i, v in enumerate(x):
+        y0 = (1 - r) * v + c * y1 - r * r * y2; y[i] = y0; y2, y1 = y1, y0
+    return y
+
+def oink(seed=0, n_grunts=2):
+    """Synthesized pig grunt 'oink-oink': jittery low pulse train + breath through nasal formants."""
+    g = np.random.default_rng(seed); out = []
+    for k in range(n_grunts):
+        d = .22 + .05 * g.random(); m = int(d * SR); x = np.arange(m) / SR
+        f0 = 165 - 70 * x / d + 18 * g.standard_normal(m).cumsum() / np.sqrt(m) * 3   # falling, rough pitch
+        ph = np.cumsum(f0 / SR); pulse = ((ph % 1) < .12).astype(np.float32) - .12
+        src = pulse + .35 * g.standard_normal(m)                                        # buzz + snorty breath
+        y = reson(src, 520, 5) + .8 * reson(src, 1250, 7) + .35 * reson(src, 2600, 9)
+        env = np.minimum(1, x / .02) * np.exp(-3.5 * x / d) * (1 + .5 * np.sin(2 * np.pi * 28 * x))  # flutter
+        y = y * env; out += [y / np.max(np.abs(y)), np.zeros(int(.07 * SR))]
+    return np.concatenate(out).astype(np.float32) * .5
+
 # ---------- voice track + timeline ----------
 vo = np.zeros(int(SR * TOTAL), np.float32)
-t, GAP, timeline = 0.35, 0.55, []
+t, GAP, timeline, oinks = 0.6, 0.55, [], [0.02]
 for i, l in enumerate(L):
-    a = load(f'audio/vo{i}.mp3')
+    a = load(f'audio/vo{i}.wav')
     s = int(t * SR); vo[s:s + len(a)] += a[: len(vo) - s]
     dur = len(a) / SR
     timeline.append({'scene': l['scene'], 'cap': l['cap'].split('|'), 'start': round(t, 3), 'end': round(t + dur, 3)})
     t += dur + GAP
+    if l.get('oinkAfter'): oinks.append(t - GAP + .12); t += .5
 # scene boundaries: each scene runs until the next one's voice begins; last one to the end
 for i, s in enumerate(timeline):
     s['sceneStart'] = 0 if i == 0 else round(timeline[i]['start'] - 0.25, 3)
     s['sceneEnd'] = TOTAL if i == len(timeline) - 1 else round(timeline[i + 1]['start'] - 0.25, 3)
 assert t < TOTAL, t
+if t - GAP + .8 < TOTAL: oinks.append(t - GAP + .2)
 
 # per-frame RMS envelope (drives the pig "talking" bounce)
 hop = SR // FPS
@@ -68,11 +92,16 @@ for s in timeline[1:]:
     add(np.convolve(w, np.ones(8) / 8, 'same').astype(np.float32), s['sceneStart'] - .12)
 add(tone(1318.5, .6, .18, 'sine', 5), timeline[-1]['sceneStart'] + .1); add(tone(1760, .5, .14, 'sine', 5), timeline[-1]['sceneStart'] + .18)
 
+# pig oinks sit in the pauses only, never over speech
+sfx = np.zeros(n, np.float32)
+for j, at in enumerate(oinks):
+    o = oink(j, 2 if j % 2 == 0 else 1); st = int(at * SR); e = min(n, st + len(o)); sfx[st:e] += o[: e - st]
+print('oinks at', [round(o, 2) for o in oinks])
 # sidechain-style ducking under the voice
 venv = np.convolve(np.abs(vo), np.ones(SR // 10) / (SR // 10), 'same')
 duck = 1 - 0.55 * np.clip(venv / (venv.max() * .25), 0, 1)
 fade = np.clip(np.minimum(tt / .3, (TOTAL - tt) / 1.2), 0, 1)
-mix = vo * 1.0 + mus * 0.32 * duck * fade
+mix = vo * 1.0 + sfx * 0.6 + mus * 0.32 * duck * fade
 mix = mix / np.max(np.abs(mix)) * 0.93
 with wave.open('audio/mix.wav', 'wb') as w:
     w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
