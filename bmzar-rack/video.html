@@ -93,6 +93,19 @@ intro(){
     [['#t0',1.0],['#t1',2.2],['#t2',3.0],['#t3',4.3]].forEach(([id,a],i)=>{const s=spring(l,a,.4);r.querySelector(id).style.transform=`scale(${s}) rotate(${(i%2?-4:4)*s}deg)`});
   }};
 },
+size(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="zc" style="left:60px;top:330px;width:520px;height:700px"><img src="assets/empty.jpg"></div>
+    <div class="abs" id="ruler" style="left:470px;top:250px;font-size:120px">📏</div>
+  </div>`);
+  const items=[['↔️','กว้าง','30'],['↕️','สูง','31'],['↘️','ลึก','19']];
+  const cards=items.map(([e,k,v],i)=>{const c=el(`<div class="abs stat" style="left:600px;top:${340+i*245}px;width:340px;height:220px;flex-direction:row;gap:18px"><div class="e" style="font-size:64px">${e}</div><div style="text-align:left"><div class="k" style="font-size:40px;font-weight:700">${k}</div><div class="v" style="font-size:76px;line-height:1">${v}<span style="font-size:36px"> cm</span></div></div></div>`);r.appendChild(c);return c});
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.5); r.querySelector('#zc').style.transform=`translateX(${(1-p)*-600}px) rotate(-3deg)`;
+    r.querySelector('#ruler').style.transform=`scale(${spring(l,.3,.4)}) rotate(${-20+Math.sin(l*4)*8}deg)`;
+    cards.forEach((c,i)=>{const s=spring(l,[1.3,2.1,3.0][i],.4);c.style.transform=`translateX(${(1-s)*500}px) scale(${.8+.2*s})`});
+  }};
+},
 tiers(){
   const r=el(`<div class="abs" style="inset:0">
     <div class="abs card" id="tc" style="left:150px;top:290px;width:640px;height:850px"><img id="ti" src="assets/full.jpg"></div>
