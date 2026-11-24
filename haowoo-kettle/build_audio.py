@@ -18,7 +18,7 @@ def reson(x, f, q):
         y0 = (1 - r) * v + c * y1 - r * r * y2; y[i] = y0; y2, y1 = y1, y0
     return y
 
-def oink(seed=0, n_grunts=2, k=1.7):
+def oink(seed=0, n_grunts=2, k=1.45):
     """Synthesized pig grunt 'oink-oink': jittery low pulse train + breath through nasal formants."""
     g = np.random.default_rng(seed); out = []
     for _ in range(n_grunts):
@@ -33,14 +33,14 @@ def oink(seed=0, n_grunts=2, k=1.7):
 
 # ---------- voice track + timeline ----------
 vo = np.zeros(int(SR * TOTAL), np.float32)
-t, GAP, timeline, oinks = 0.6, 0.55, [], [0.02]
+t, GAP, timeline, oinks = 0.55, 0.45, [], [0.02]
 for i, l in enumerate(L):
     a = load(f'audio/vo{i}.wav')
     s = int(t * SR); vo[s:s + len(a)] += a[: len(vo) - s]
     dur = len(a) / SR
     timeline.append({'scene': l['scene'], 'cap': l['cap'].split('|'), 'start': round(t, 3), 'end': round(t + dur, 3)})
     t += dur + GAP
-    if l.get('oinkAfter'): oinks.append(t - GAP + .12); t += .5
+    if l.get('oinkAfter'): oinks.append(t - GAP + .1); t += .45
 # scene boundaries: each scene runs until the next one's voice begins; last one to the end
 for i, s in enumerate(timeline):
     s['sceneStart'] = 0 if i == 0 else round(timeline[i]['start'] - 0.25, 3)
@@ -101,7 +101,7 @@ print('oinks at', [round(o, 2) for o in oinks])
 venv = np.convolve(np.abs(vo), np.ones(SR // 10) / (SR // 10), 'same')
 duck = 1 - 0.55 * np.clip(venv / (venv.max() * .25), 0, 1)
 fade = np.clip(np.minimum(tt / .3, (TOTAL - tt) / 1.2), 0, 1)
-mix = vo * 1.0 + sfx * 0.6 + mus * 0.32 * duck * fade
+mix = vo * 1.0 + sfx * 0.4 + mus * 0.32 * duck * fade
 mix = mix / np.max(np.abs(mix)) * 0.93
 with wave.open('audio/mix.wav', 'wb') as w:
     w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
