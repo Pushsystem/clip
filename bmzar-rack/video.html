@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>Bmzar rack clip</title>
+<style>
+@font-face{font-family:K;font-weight:500;src:url(assets/kanit1.ttf)}
+@font-face{font-family:K;font-weight:700;src:url(assets/kanit2.ttf)}
+@font-face{font-family:K;font-weight:900;src:url(assets/kanit3.ttf)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#fff4e6}
+body{font-family:K,'Noto Color Emoji',sans-serif;color:#3b2314;position:relative}
+.abs{position:absolute}
+#bg{inset:0;background:radial-gradient(1200px 900px at 50% 30%,#fffaf2 0%,#ffe9d2 55%,#f7cfa8 100%)}
+.blob{border-radius:50%;filter:blur(2px);opacity:.35}
+.stripe{inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.18) 0 40px,transparent 40px 80px)}
+.card{border-radius:44px;overflow:hidden;box-shadow:0 30px 70px rgba(90,40,10,.35);border:10px solid #fff;background:#fff}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.pigc{border-radius:50%;overflow:hidden;border:10px solid #f5b301;box-shadow:0 18px 50px rgba(120,50,0,.4);background:#fff}
+.pigc img{width:100%;height:100%;display:block}
+.cap{left:40px;width:880px;top:1170px;text-align:center}
+.cap .l{display:inline-block;font-weight:900;line-height:1.25;padding:6px 26px 14px;border-radius:26px;margin:8px 0}
+.cap .l1{font-size:72px;color:#fff;-webkit-text-stroke:0;text-shadow:0 6px 0 #3b2314,4px 0 0 #3b2314,-4px 0 0 #3b2314,0 -4px 0 #3b2314,4px 4px 0 #3b2314,-4px 4px 0 #3b2314,4px -4px 0 #3b2314,-4px -4px 0 #3b2314,0 14px 24px rgba(0,0,0,.25)}
+.cap .l2{white-space:nowrap;font-size:58px;color:#fff;background:#ff2d87;box-shadow:0 10px 0 #b8005a,0 18px 30px rgba(0,0,0,.25)}
+.tag{background:#3b2314;color:#fff;font-weight:700;font-size:44px;padding:10px 30px 16px;border-radius:999px;white-space:nowrap;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.tag b{color:#ffd23f}
+.chip{display:flex;align-items:center;gap:22px;background:#fff;border-radius:34px;padding:18px 34px 22px;box-shadow:0 14px 0 #e8b98c,0 24px 40px rgba(90,40,10,.25);font-weight:700;font-size:52px;white-space:nowrap}
+.chip .e{font-size:70px}
+.chip .v{margin-left:auto;background:#ff2d87;color:#fff;border-radius:22px;padding:2px 22px 8px;font-weight:900}
+.stat{width:400px;height:250px;background:#fff;border-radius:36px;box-shadow:0 14px 0 #e8b98c,0 24px 40px rgba(90,40,10,.25);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.stat .e{font-size:72px;line-height:1}
+.stat .v{font-weight:900;font-size:66px;color:#e8174f;line-height:1.2}
+.stat .k{font-weight:500;font-size:36px;line-height:1.1}
+.handle{white-space:nowrap;font-weight:700;font-size:40px;color:#3b2314;background:rgba(255,255,255,.9);padding:6px 26px 10px 110px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,.15)}
+#gauge text{font-family:K}
+.arrow{font-size:170px;line-height:1}
+.cart{background:linear-gradient(#ff4f9b,#ff2d87);color:#fff;font-weight:900;font-size:66px;padding:20px 50px 30px;border-radius:999px;box-shadow:0 14px 0 #b8005a,0 26px 40px rgba(0,0,0,.3);white-space:nowrap}
+</style></head>
+<body>
+<div id="bg" class="abs"></div>
+<div class="abs stripe"></div>
+<div id="blobs"></div>
+<div id="stage" class="abs" style="inset:0"></div>
+<div id="cap" class="abs cap"></div>
+<!-- persistent channel badge -->
+<div id="badge" class="abs" style="left:46px;top:150px">
+  <div class="abs handle" style="left:40px;top:38px">@อู๊ดอี๊ดเอาจริง</div>
+  <div id="mini" class="abs pigc" style="left:0;top:0;width:130px;height:130px;border-width:7px"><img src="assets/pig.webp"></div>
+</div>
+<div id="prog" class="abs" style="left:0;top:0;height:10px;background:#ff2d87"></div>
+
+<script>
+const TL = TIMELINE_JSON;
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lin=(t,a,b)=>clamp((t-a)/(b-a));
+const eo=x=>1-Math.pow(1-x,3);
+const back=x=>{const c=1.9;x=clamp(x);return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const spring=(t,t0,d=.45)=>t<t0?0:back((t-t0)/d);
+const mix=(a,b,k)=>a+(b-a)*k;
+const eio=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const el=(html)=>{const d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild};
+const S=document.getElementById('stage'), C=document.getElementById('cap');
+
+// background blobs
+const B=document.getElementById('blobs');
+const blobs=[[120,520,260,'#ffb3d1'],[930,420,200,'#ffd77a'],[860,1500,320,'#ffc1a1'],[160,1700,240,'#ffd77a'],[560,860,380,'#fff']];
+blobs.forEach(([x,y,r,c])=>B.appendChild(el(`<div class="abs blob" style="left:${x-r}px;top:${y-r}px;width:${2*r}px;height:${2*r}px;background:${c}"></div>`)));
+
+// ---------- scene builders: each returns {root, update(t, local, env)} ----------
+const scenes={
+hook(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="hk" style="left:520px;top:330px;width:480px;height:640px"><img src="assets/full.jpg" style="object-position:50% 50%"></div>
+    <div class="abs pigc" id="hp" style="left:60px;top:360px;width:560px;height:560px"><img src="assets/pig.webp"></div>
+    <div class="abs" id="stop" style="left:640px;top:240px;font-size:150px;transform-origin:center">😵</div>
+  </div>`);
+  return {root:r,update(t,l,e){
+    const p=spring(l,0.05,.55), k=spring(l,.5,.6);
+    r.querySelector('#hp').style.transform=`scale(${p*(1+e*.07)}) rotate(${-6+Math.sin(l*9)*e*4}deg)`;
+    r.querySelector('#hk').style.transform=`translateX(${(1-k)*700}px) rotate(${8-2*Math.sin(l*2)}deg)`;
+    const s=spring(l,.25,.4); r.querySelector('#stop').style.transform=`scale(${s}) rotate(${Math.sin(l*12)*12}deg)`;
+  }};
+},
+intro(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="ic" style="left:220px;top:290px;width:640px;height:850px"><img id="ii" src="assets/empty.jpg"></div>
+    <div class="abs tag" id="t0" style="left:700px;top:320px;background:#ff2d87;font-size:56px">3 ชั้น</div>
+    <div class="abs tag" id="t1" style="left:520px;top:520px">ลาย<b>สานหวาย</b></div>
+    <div class="abs tag" id="t2" style="left:70px;top:800px">โครง<b>ลายไม้</b></div>
+    <div class="abs tag" id="t3" style="left:470px;top:1030px">มินิมอล <b>วินเทจ</b> ✨</div>
+  </div>`);
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.55);
+    r.querySelector('#ic').style.transform=`scale(${.6+.4*p}) rotate(${-3+3*p}deg)`;
+    r.querySelector('#ii').style.transform=`scale(${1.02+l*.02})`;
+    [['#t0',1.0],['#t1',2.2],['#t2',3.0],['#t3',4.3]].forEach(([id,a],i)=>{const s=spring(l,a,.4);r.querySelector(id).style.transform=`scale(${s}) rotate(${(i%2?-4:4)*s}deg)`});
+  }};
+},
+tiers(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="tc" style="left:150px;top:290px;width:640px;height:850px"><img id="ti" src="assets/full.jpg"></div>
+  </div>`);
+  const ys=[520,690,860], pills=ys.map((y,i)=>{const p=el(`<div class="abs tag" style="left:760px;top:${y}px;background:${['#ff2d87','#f5a300','#3b2314'][i]}">◀ ชั้น ${i+1}</div>`);r.appendChild(p);return p});
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.5); r.querySelector('#tc').style.transform=`scale(${.7+.3*p})`;
+    r.querySelector('#ti').style.transform=`scale(${1.04+l*.015})`;
+    pills.forEach((q,i)=>{const s=spring(l,.6+i*.45,.4);q.style.transform=`translateX(${(1-s)*300}px) scale(${s})`});
+  }};
+},
+space(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="sc" style="left:90px;top:290px;width:900px;height:720px"><div id="sb" style="width:100%;height:100%;background:url(assets/full.jpg);background-size:150%;background-position:40% 20%"></div></div>
+  </div>`);
+  const items=[['☕','แก้วมัค'],['🍵','ถ้วยกาแฟ'],['🍽️','จานรอง']];
+  const chips=items.map(([e,n],i)=>{const c=el(`<div class="abs chip" style="left:${70+i*300}px;top:1040px;font-size:40px;padding:10px 22px 14px;gap:10px"><span class="e" style="font-size:48px">${e}</span>${n}</div>`);r.appendChild(c);return c});
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.5); r.querySelector('#sc').style.transform=`translateY(${(1-p)*300}px)`; r.querySelector('#sc').style.opacity=clamp(p*2);
+    r.querySelector('#sb').style.backgroundPosition=`40% ${mix(15,85,eio(lin(l,.3,4.5)))}%`;
+    chips.forEach((c,i)=>{const s=spring(l,.3+i*.6,.4);c.style.transform=`scale(${s})`});
+  }};
+},
+multi(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="mc" style="left:60px;top:330px;width:520px;height:700px"><img src="assets/empty.jpg"></div>
+  </div>`);
+  const items=[['🍵','ชุดน้ำชา'],['🧂','ขวดเครื่องปรุง'],['🖊️','ของบนโต๊ะทำงาน']];
+  const chips=items.map(([e,n],i)=>{const c=el(`<div class="abs chip" style="left:520px;top:${380+i*150}px;font-size:42px"><span class="e">${e}</span>${n}</div>`);r.appendChild(c);return c});
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.5); r.querySelector('#mc').style.transform=`translateX(${(1-p)*-600}px) rotate(-3deg)`;
+    chips.forEach((c,i)=>{const s=spring(l,1.0+i*.8,.4);c.style.transform=`translateX(${(1-s)*500}px) rotate(${i%2?2:-2}deg)`});
+  }};
+},
+strong(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="gc" style="left:70px;top:330px;width:500px;height:740px"><div id="gb" style="width:100%;height:100%;background:url(assets/empty.jpg);background-size:260%;background-position:2% 62%"></div></div>
+    <div class="abs tag" id="zoom" style="left:110px;top:980px;font-size:32px">🔍 ซูมให้ดู</div>
+  </div>`);
+  const items=[['💪','แข็งแรง','โครงมั่นคง'],['🛡️','ทนทาน','ใช้ได้นาน'],['🔧','ประกอบง่าย','ทำเองได้']];
+  const cards=items.map(([e,v,k],i)=>{const c=el(`<div class="abs stat" style="left:600px;top:${340+i*245}px;width:340px;height:220px"><div class="e">${e}</div><div class="v" style="font-size:54px">${v}</div><div class="k">${k}</div></div>`);r.appendChild(c);return c});
+  return {root:r,update(t,l,e){
+    const p=spring(l,0,.5); r.querySelector('#gc').style.transform=`scale(${.7+.3*p}) rotate(${-2*p}deg)`;
+    r.querySelector('#gb').style.backgroundSize=`${260+l*12}%`;
+    r.querySelector('#zoom').style.transform=`scale(${spring(l,.5,.4)})`;
+    cards.forEach((c,i)=>{const s=spring(l,.3+[0,.8,1.9][i],.4);c.style.transform=`scale(${s})`});
+  }};
+},
+decor(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="dc" style="left:110px;top:280px;width:860px;height:860px"><img id="di" src="assets/full.jpg" style="object-position:50% 45%"></div>
+    <div class="abs tag" id="d1" style="left:620px;top:330px;background:#ff2d87">ดูแพง <b style="color:#fff">💎</b></div>
+  </div>`);
+  const sp=[[170,420],[860,640],[240,960],[780,1000]].map(([x,y])=>{const s=el(`<div class="abs" style="left:${x}px;top:${y}px;font-size:80px">✨</div>`);r.appendChild(s);return s});
+  return {root:r,update(t,l,e){
+    r.querySelector('#dc').style.transform=`scale(${.85+.15*spring(l,0,.5)})`;
+    r.querySelector('#di').style.transform=`scale(${1.18-l*.04})`;
+    r.querySelector('#d1').style.transform=`scale(${spring(l,1.2,.4)}) rotate(5deg)`;
+    sp.forEach((s,i)=>{const a=(l*1.3+i*.25)%1;s.style.opacity=Math.sin(Math.PI*a)*clamp(l*2);s.style.transform=`scale(${.6+.6*Math.sin(Math.PI*a)}) rotate(${l*60}deg)`});
+  }};
+},
+cta(){
+  const r=el(`<div class="abs" style="inset:0">
+    <div class="abs card" id="ck" style="left:570px;top:330px;width:420px;height:540px"><img src="assets/full.jpg" style="object-position:50% 50%"></div>
+    <div class="abs pigc" id="cp" style="left:70px;top:310px;width:520px;height:520px"><img src="assets/pig.webp"></div>
+    <div class="abs" id="gift" style="left:470px;top:720px;font-size:150px">🎁</div>
+    <div class="abs cart" id="cart" style="left:150px;top:1250px">🛒 กดตะกร้าเลย!</div>
+    <div class="abs arrow" id="arr" style="left:40px;top:1360px">👇</div>
+  </div>`);
+  return {root:r,update(t,l,e){
+    r.querySelector('#cp').style.transform=`scale(${spring(l,0,.5)*(1+e*.07)}) rotate(${4+Math.sin(l*9)*e*4}deg)`;
+    r.querySelector('#ck').style.transform=`translateX(${(1-spring(l,.25,.5))*600}px) rotate(${6}deg)`;
+    r.querySelector('#gift').style.transform=`scale(${spring(l,.9,.45)}) rotate(${Math.sin(l*6)*8}deg)`;
+    const c=spring(l,2.6,.45); r.querySelector('#cart').style.transform=`scale(${c*(1+.05*Math.sin(l*10))})`;
+    r.querySelector('#arr').style.transform=`translateY(${Math.abs(Math.sin(l*6))*-40}px) scale(${spring(l,2.9,.4)})`;
+  }};
+}};
+
+const built=TL.scenes.map(s=>{const o=scenes[s.scene]();o.root.style.display='none';S.appendChild(o.root);return o});
+const capEls=TL.scenes.map(s=>{const d=el(`<div style="display:none;${s.scene==='cta'?'margin-top:-260px':''}"><div class="l l1">${s.cap[0]}</div><br><div class="l l2">${s.cap[1]}</div></div>`);C.appendChild(d);return d});
+
+window.setTime=function(t){
+  const f=Math.min(TL.env.length-1,Math.floor(t*TL.fps)); const e=TL.env[f]||0;
+  document.getElementById('prog').style.width=(t/TL.total*1080)+'px';
+  TL.scenes.forEach((s,i)=>{
+    const on=t>=s.sceneStart&&t<s.sceneEnd; built[i].root.style.display=on?'block':'none'; capEls[i].style.display=on?'block':'none';
+    if(!on) return;
+    const l=t-s.sceneStart;
+    // scene exit: quick zoom-fade over last 0.2s (not for the final scene)
+    const out=i<TL.scenes.length-1?lin(t,s.sceneEnd-.2,s.sceneEnd):0;
+    built[i].root.style.opacity=1-out; built[i].root.style.transform=`scale(${1+out*.08})`;
+    built[i].update(t,l,e);
+    const c=capEls[i].children, a=spring(t,s.start,.35), b=spring(t,s.start+.35,.35);
+    c[0].style.transform=`scale(${a}) rotate(${i===0?Math.sin(t*30)*3*clamp(1.2-l):0}deg)`;
+    c[2].style.transform=`scale(${b})`;
+    capEls[i].style.opacity=1-out;
+  });
+  const big=['hook','cta'].includes(TL.scenes.find(s=>t>=s.sceneStart&&t<s.sceneEnd)?.scene);
+  const bd=document.getElementById('badge'); bd.style.opacity=big?0:1;
+  document.getElementById('mini').style.transform=`scale(${1+e*.12}) rotate(${Math.sin(t*10)*e*6}deg)`;
+};
+setTime(0);
+</script>
+</body></html>
