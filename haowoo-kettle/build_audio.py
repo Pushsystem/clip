@@ -18,15 +18,15 @@ def reson(x, f, q):
         y0 = (1 - r) * v + c * y1 - r * r * y2; y[i] = y0; y2, y1 = y1, y0
     return y
 
-def oink(seed=0, n_grunts=2):
+def oink(seed=0, n_grunts=2, k=1.7):
     """Synthesized pig grunt 'oink-oink': jittery low pulse train + breath through nasal formants."""
     g = np.random.default_rng(seed); out = []
-    for k in range(n_grunts):
-        d = .22 + .05 * g.random(); m = int(d * SR); x = np.arange(m) / SR
-        f0 = 165 - 70 * x / d + 18 * g.standard_normal(m).cumsum() / np.sqrt(m) * 3   # falling, rough pitch
+    for _ in range(n_grunts):
+        d = (.22 + .05 * g.random()) / 1.3; m = int(d * SR); x = np.arange(m) / SR
+        f0 = k * (165 - 70 * x / d) + 18 * g.standard_normal(m).cumsum() / np.sqrt(m) * 3   # falling, rough pitch
         ph = np.cumsum(f0 / SR); pulse = ((ph % 1) < .12).astype(np.float32) - .12
         src = pulse + .35 * g.standard_normal(m)                                        # buzz + snorty breath
-        y = reson(src, 520, 5) + .8 * reson(src, 1250, 7) + .35 * reson(src, 2600, 9)
+        y = reson(src, 520 * k, 5) + .8 * reson(src, 1250 * k, 7) + .35 * reson(src, 2600 * k, 9)
         env = np.minimum(1, x / .02) * np.exp(-3.5 * x / d) * (1 + .5 * np.sin(2 * np.pi * 28 * x))  # flutter
         y = y * env; out += [y / np.max(np.abs(y)), np.zeros(int(.07 * SR))]
     return np.concatenate(out).astype(np.float32) * .5
