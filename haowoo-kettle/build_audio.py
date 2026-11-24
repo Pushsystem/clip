@@ -41,6 +41,7 @@ for i, l in enumerate(L):
     timeline.append({'scene': l['scene'], 'cap': l['cap'].split('|'), 'start': round(t, 3), 'end': round(t + dur, 3)})
     t += dur + GAP
     if l.get('oinkAfter'): oinks.append(t - GAP + .1); t += .45
+    t += l.get('padAfter', 0)
 # scene boundaries: each scene runs until the next one's voice begins; last one to the end
 for i, s in enumerate(timeline):
     s['sceneStart'] = 0 if i == 0 else round(timeline[i]['start'] - 0.25, 3)
