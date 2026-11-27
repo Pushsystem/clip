@@ -1,0 +1,7 @@
+# ถ้าคุณเกิดเป็นหมู (animated) — Treatment
+
+The user wanted their boss-pig mascot to *act* as a cartoon, not to be shown as still pictures. With no image or video generator available, the pig is redrawn in code after the user's design (bosspig.js) and rigged: shoulder/elbow arms with two-bone IK, walking/running legs, head tilt, a talking jaw on twos, five faces (cool, laugh, grumpy, sniff, talking) and four hands (fist, grip, thumb-up, open). Design cues kept from the mascot: big round pink head, folded ears, black sunglasses with gold rims, heavy eyebrows, gold chain with a $ pendant, gold watch, dark-brown suit, white shirt, black belt with a gold crown buckle, black shoes with gold soles; the setting is a dark store with gold-lit shelves and a neon house outline.
+Style: Mid-century Cartoon graphics (flat colour, off-register fills, broken ink line, tags, medallions). Vertical 1080×1920, 24 fps, 35.2 s. Same Thai voice-over and timeline as the picture version (boss-pig/).
+
+## Acting, scene by scene
+0–3.6 arms folded, tapping a foot, grumpy, talking · 3.6–12.6 mopping (both hands ride the pole, the mop swings on twos, floor sparkles), a mud-and-sun call-out · 12.6–17.6 thumbs-up with a spray bottle, then taps his head · 17.6–21.6 plays a joystick, laughing · 21.6–25.2 runs pushing a loaded shopping cart, camera tracking, speed lines, "~17 กม./ชม." · 25.2–28.7 close-up sniffing (snout wiggles), scent lines, truffle call-out · 28.7–30.8 four recap poses with word cards · 30.8–35.2 waves goodbye with a stack of boxes, iris-out.
