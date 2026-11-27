@@ -1,0 +1,9 @@
+ถ้าคุณเกิดเป็นหมู — credits and licences
+
+Character pictures: img/pig1.jpg–pig5.jpg, the boss-pig mascot supplied by the user (used as supplied; the user is responsible for the rights to these images).
+Everything else in the picture: drawn in code (HTML Canvas 2D) with the Mid-century Cartoon style engine (engine/toon.js) from the Lemo-Opuscar library (see its LICENSE).
+Voice: Microsoft Edge neural text-to-speech, voice th-TH-NiwatNeural, through edge-tts (online service). Check Microsoft's terms before commercial use.
+Speech check: faster-whisper (MIT), Whisper "small" model (MIT).
+Music: original score, synthesised in mix.py (no samples). Sound effects: synthesised (mix.py, core/audio/sfx.py from the library).
+Fonts (SIL Open Font License 1.1, from the @fontsource npm packages; licence texts in fonts/): Prompt, Chonburi, Sriracha (Cadson Demak), Alfa Slab One (JM Solé).
+Topic: retold in our own words from the subject of a YouTube short by ตูบเล่า; none of its images, voice, script or music are used. Facts: FACTS.md.
